@@ -130,6 +130,12 @@ const resources = {
       // Issue Card
       "issue.upvotes": "Upvotes",
       "issue.reported": "Reported",
+      
+      // Timeline / Check-back feature
+      "timeline.checkAfter": "Check back after",
+      "timeline.tooltip": "Expected date to check for an update on this issue",
+      "timeline.modalLabel": "Check Back For Update After",
+      "timeline.modalHint": "Visit your dashboard on or after this date to see if there's an update on this issue.",
       "issue.viewDetails": "View Details",
       
       // Notifications
@@ -297,6 +303,12 @@ const resources = {
       "issue.reported": "रिपोर्ट की गई",
       "issue.viewDetails": "विवरण देखें",
       
+      // Timeline / Check-back feature
+      "timeline.checkAfter": "इस तारीख के बाद जांचें",
+      "timeline.tooltip": "इस समस्या पर अपडेट देखने की अपेक्षित तारीख",
+      "timeline.modalLabel": "अपडेट के लिए इस तारीख के बाद देखें",
+      "timeline.modalHint": "इस तारीख को या उसके बाद अपना डैशबोर्ड देखें।",
+      
       // Notifications
       "notifications.title": "सूचनाएं",
       "notifications.empty": "अभी कोई सूचना नहीं",
@@ -461,6 +473,12 @@ const resources = {
       "issue.upvotes": "अपवोट",
       "issue.reported": "अहवाल दिला",
       "issue.viewDetails": "तपशील पहा",
+      
+      // Timeline / Check-back feature
+      "timeline.checkAfter": "या तारखेनंतर तपासा",
+      "timeline.tooltip": "या समस्येवर अपडेट पाहण्याची अपेक्षित तारीख",
+      "timeline.modalLabel": "अपडेटसाठी या तारखेनंतर पहा",
+      "timeline.modalHint": "या तारखेला किंवा त्यानंतर तुमचे डॅशबोर्ड पहा।",
       
       // Notifications
       "notifications.title": "सूचना",

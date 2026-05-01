@@ -13,6 +13,44 @@ const catIcons = {
   Other: '📌' 
 }
 
+// Days to wait before checking for an update, per category
+const checkBackDays = {
+  Road: 5,
+  Electricity: 3,
+  Water: 4,
+  Sanitation: 4,
+  Parks: 7,
+  Other: 5,
+}
+
+// Returns the formatted "check back after" date string: "1st May 2026"
+function getCheckBackDate(issue) {
+  let base
+  if (issue.createdAt?.toDate) {
+    base = issue.createdAt.toDate()
+  } else if (issue.date) {
+    // fallback: issue.date is stored as en-IN locale string "DD/MM/YYYY"
+    const parts = issue.date.split('/')
+    if (parts.length === 3) {
+      base = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+    }
+  }
+  if (!base || isNaN(base.getTime())) return null
+
+  const days = checkBackDays[issue.category] ?? 5
+  const checkDate = new Date(base)
+  checkDate.setDate(checkDate.getDate() + days)
+
+  const day = checkDate.getDate()
+  const suffix =
+    day === 1 || day === 21 || day === 31 ? 'st' :
+    day === 2 || day === 22 ? 'nd' :
+    day === 3 || day === 23 ? 'rd' : 'th'
+  const month = checkDate.toLocaleString('en-IN', { month: 'long' })
+  const year = checkDate.getFullYear()
+  return `${day}${suffix} ${month} ${year}`
+}
+
 export default function Dashboard() {
   const { currentUser, isAdmin } = useAuth()
   const { t } = useTranslation()
@@ -173,7 +211,25 @@ export default function Dashboard() {
                         {t(`category.${issue.category}`) || issue.category}
                       </span>
                     </div>
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{issue.date}</span>
+                    {/* Timeline: check-back date badge */}
+                    {(() => {
+                      const checkDate = getCheckBackDate(issue)
+                      return checkDate ? (
+                        <div className="flex flex-col items-end" title={t('timeline.tooltip')}>
+                          <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
+                            {t('timeline.checkAfter')}
+                          </span>
+                          <span
+                            className="text-[10px] font-bold px-1.5 py-0.5 rounded-md mt-0.5"
+                            style={{ background: 'rgba(245,158,11,0.12)', color: '#d97706', border: '1px solid rgba(245,158,11,0.3)' }}
+                          >
+                            🕐 {checkDate}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{issue.date}</span>
+                      )
+                    })()}
                   </div>
 
                   <h3 className="font-bold text-base mb-1 line-clamp-1" style={{ color: 'var(--text-primary)' }}>
@@ -258,6 +314,21 @@ export default function Dashboard() {
             </p>
             
             <p className="text-sm mb-4 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{selected.description}</p>
+
+            {/* Timeline check-back section — visible to both user and admin */}
+            {(() => {
+              const checkDate = getCheckBackDate(selected)
+              return checkDate ? (
+                <div className="p-3 rounded-lg mb-3 flex items-start gap-3" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                  <span className="text-xl mt-0.5">🕐</span>
+                  <div>
+                    <p className="text-xs font-semibold mb-0.5" style={{ color: '#d97706' }}>{t('timeline.modalLabel')}</p>
+                    <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{checkDate}</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{t('timeline.modalHint')}</p>
+                  </div>
+                </div>
+              ) : null
+            })()}
 
             {isAdmin && (
               <div className="p-3 rounded-lg mb-3" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
